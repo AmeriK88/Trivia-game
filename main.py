@@ -2,11 +2,12 @@ import tkinter as tk
 from tkinter import simpledialog, messagebox
 import random
 
+#Inicializamos el jeugo con __init__ 
 class TriviaGame:
     def __init__(self, window):
         self.window = window
-        # Crea las categorías con sus respuestas con sus respuestas en un diccionario 
         self.categories = {
+            #Creamos diccionario con sus opciones
             'ciencia': [
                 ("¿Cuál es el símbolo químico del oxígeno?", ["A) O", "B) Ox", "C) O2", "D) O3"], "A) O"),
                 ("¿Cuál es la fórmula química del agua?", ["A) H2O", "B) CO2", "C) O2", "D) H2"], "A) H2O"),
@@ -42,24 +43,24 @@ class TriviaGame:
         self.playing = False
         self.finished_all_questions = False
 
+    #Bienvenida al usuario
     def welcome_user(self):
-        # Pide al usuario su nombre
         self.name = simpledialog.askstring("Nombre", "¡Bienvenido al juego de trivia! Por favor, ingresa tu nombre: ")
         messagebox.showinfo("Bienvenido", f"¡Hola, {self.name}! Bienvenido a Trivia!")
 
+    #Terminar juego si no se quiere jugar
     def ask_to_play(self):
-        # Pregunta al usuario si quiere jugar
         response = messagebox.askyesno("Jugar", "¿Quieres jugar?")
         return response
 
+    #Elegir categoría
     def choose_category(self):
-        # Pregunta al usuario qué categoría quiere jugar
         category = simpledialog.askstring("Categoría", "Elige una categoría: ciencia, deportes, historia")
         self.questions = self.categories.get(category, [])
         random.shuffle(self.questions)
 
+
     def ask_question(self):
-        # Pregunta una pregunta al usuario
         if self.current_question < len(self.questions):
             question, options, self.correct_answer = self.questions[self.current_question]
             self.current_question += 1
@@ -67,32 +68,28 @@ class TriviaGame:
             for i in range(4):
                 self.option_buttons[i].config(text=options[i], state="normal")
         else:
-            # Informa al usuario que ha terminado la categoría
             messagebox.showinfo("Fin de la categoría", f"¡Has terminado la categoría! Tu puntuación actual es: {self.score}")
             if self.playing:
                 if self.finished_all_categories():
                     messagebox.showinfo("Fin del juego", f"¡Has respondido todas las preguntas! Tu puntuación final es: {self.score}")
                     self.play_again()
                 else:
-                     # Si el usuario quiere seguir jugando, elige otra categoría
                     self.choose_category()
-                    self.current_question = 0  # Reiniciamos el índice de la pregunta actual
-                    self.ask_question()  # Volvemos a empezar con las preguntas de la nueva categoría
+                    self.current_question = 0  
+                    self.ask_question()  
             else:
-                # Si el usuario no quiere seguir jugando, muestra la puntuación final y ofrece jugar de nuevo
                 messagebox.showinfo("Fin del juego", f"¡Has terminado el juego! Tu puntuación final es: {self.score}")
                 self.play_again()
 
+    #Comprobar si la categoría ha terminado
     def finished_all_categories(self):
-        # Verifica si se han respondido todas las preguntas de todas las categorías
         for category_questions in self.categories.values():
             if not all(question in self.questions for question, _, _ in category_questions):
                 return False
         return True
 
-    
+    #Comprobar las respuestas
     def check_answer(self, answer):
-        # Comprueba si la respuesta del usuario es correcta
         if answer == self.correct_answer:
             self.score += 1
             messagebox.showinfo("Correcto", "¡Correcto!")
@@ -103,20 +100,18 @@ class TriviaGame:
         self.ask_question()
 
     def play_again(self):
-        # Pregunta al usuario si quiere jugar de nuevo
         play_again = messagebox.askyesno("Jugar de nuevo", "¿Quieres jugar de nuevo?")
         if play_again:
             self.score = 0
             self.score_label.config(text=f"Puntuación: {self.score}")
             self.finished_all_questions = False
             self.choose_category()
-            self.current_question = 0  # Reiniciamos el índice de la pregunta actual
-            self.ask_question()  # Empezamos con las preguntas de la nueva partida
+            self.current_question = 0 
+            self.ask_question() 
         else:
             self.window.quit()
-
+  
     def play(self):
-        # Inicia el juego
         self.playing = True
         self.question_label = tk.Label(self.window, text="", bg="lightgreen", fg="black", font=("Arial", 14, "bold"))
         self.question_label.pack(pady=10)
@@ -140,24 +135,3 @@ if game.ask_to_play():
 else:
     print("¡Hasta la próxima!")
 window.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
